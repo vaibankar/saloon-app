@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lumiere-salon-deployment
+  labels:
+    app: lumiere-salon
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: lumiere-salon
+  template:
+    metadata:
+      labels:
+        app: lumiere-salon
+    spec:
+      containers:
+      - name: lumiere-salon
+        # Replace 'lumiere-salon:latest' with your actual registry path (e.g., myregistry/lumiere-salon:v1)
+        image: lumiere-salon:latest 
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lumiere-salon-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: lumiere-salon
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
